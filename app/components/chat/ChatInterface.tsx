@@ -30,10 +30,19 @@ export default function ChatInterface() {
   // Mirror SDK UI messages to local store for demo/state separation
   useEffect(() => {
     messages.forEach((m) => {
+      // Safely map only text parts from UIMessage to our ChatMessage shape
+      const textParts = (Array.isArray(m.parts) ? m.parts : [])
+        .filter((part): part is { type: 'text'; text: string } => {
+          if (!part || typeof part !== 'object') return false;
+          const obj = part as Record<string, unknown>;
+          return obj.type === 'text' && typeof obj.text === 'string';
+        })
+        .map((p) => ({ type: 'text' as const, text: p.text }));
+
       const mapped: ChatMessage = {
         id: m.id,
         role: m.role,
-        parts: m.parts as unknown as ChatMessage['parts'],
+        parts: textParts,
       };
       // Append if not exists
       const exists = activeMessages.some((msg) => msg.id === mapped.id);

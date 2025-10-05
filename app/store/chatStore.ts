@@ -13,6 +13,8 @@ interface ChatState {
   clear: () => void;
 }
 
+type PersistedState = Pick<ChatState, 'threads' | 'activeThreadId'>;
+
 const creator: StateCreator<ChatState> = (set) => ({
   threads: [],
   activeThreadId: null,
@@ -60,8 +62,8 @@ export const useChatStore = create<ChatState>()(
   persist(creator, 
     {
       name: 'chat-store-v1',
-      storage: createJSONStorage(() => (typeof window !== 'undefined' ? window.localStorage : undefined as unknown as Storage)),
-      partialize: (state) => ({ threads: state.threads, activeThreadId: state.activeThreadId }),
+      storage: createJSONStorage<PersistedState>(() => (typeof window !== 'undefined' ? window.localStorage : undefined as unknown as Storage)),
+      partialize: (state): PersistedState => ({ threads: state.threads, activeThreadId: state.activeThreadId }),
       version: 1,
     },
   ),
