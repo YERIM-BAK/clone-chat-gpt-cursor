@@ -13,7 +13,7 @@ interface ChatState {
   clear: () => void;
 }
 
-const creator: StateCreator<ChatState> = (set, get) => ({
+const creator: StateCreator<ChatState> = (set) => ({
   threads: [],
   activeThreadId: null,
   isSending: false,
@@ -60,9 +60,7 @@ export const useChatStore = create<ChatState>()(
   persist(creator, 
     {
       name: 'chat-store-v1',
-      storage: createJSONStorage(() =>
-        typeof window !== 'undefined' ? window.localStorage : undefined as any,
-      ),
+      storage: createJSONStorage(() => (typeof window !== 'undefined' ? window.localStorage : undefined as unknown as Storage)),
       partialize: (state) => ({ threads: state.threads, activeThreadId: state.activeThreadId }),
       version: 1,
     },

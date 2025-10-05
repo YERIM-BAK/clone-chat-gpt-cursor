@@ -19,7 +19,7 @@ export default function ChatInterface() {
   }, [activeThreadId]);
 
   const activeMessages: ChatMessage[] = useMemo(() => {
-    const t = threads.find((x: any) => x.id === activeThreadId);
+    const t = threads.find((thread) => thread.id === activeThreadId);
     return t?.messages ?? [];
   }, [threads, activeThreadId]);
 
@@ -33,10 +33,10 @@ export default function ChatInterface() {
       const mapped: ChatMessage = {
         id: m.id,
         role: m.role,
-        parts: m.parts as any,
+        parts: m.parts as unknown as ChatMessage['parts'],
       };
       // Append if not exists
-      const exists = activeMessages.some((x: ChatMessage) => x.id === mapped.id);
+      const exists = activeMessages.some((msg) => msg.id === mapped.id);
       if (!exists) addMessage(mapped);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps

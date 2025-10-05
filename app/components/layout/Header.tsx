@@ -19,7 +19,7 @@ export default function Header() {
           <Button
             variant="default"
             onClick={() => {
-              const id = addThread();
+              addThread();
               router.refresh();
             }}
           >
